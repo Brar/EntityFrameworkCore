@@ -185,6 +185,12 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
         public static string UniqueConstraintSchemaRequired
             => GetString("UniqueConstraintSchemaRequired");
 
+        /// <summary>
+        ///     SQL Server requires the schema name to be specified for rename foreign key operations. Specify schema name in the call to MigrationBuilder.RenameForeignKey.
+        /// </summary>
+        public static string ForeignKeySchemaRequired
+            => GetString("ForeignKeySchemaRequired");
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);

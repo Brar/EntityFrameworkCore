@@ -34,6 +34,10 @@ namespace Microsoft.EntityFrameworkCore.TestUtilities
         {
         }
 
+        protected override void Generate(RenameForeignKeyOperation operation, IModel model, MigrationCommandListBuilder builder)
+        {
+        }
+
         protected override void Generate(RenameIndexOperation operation, IModel model, MigrationCommandListBuilder builder)
         {
         }

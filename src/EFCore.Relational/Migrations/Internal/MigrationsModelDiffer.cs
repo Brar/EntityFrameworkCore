@@ -43,7 +43,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
 
         private static readonly Type[] _alterOperationTypes = { typeof(AddPrimaryKeyOperation), typeof(AddUniqueConstraintOperation), typeof(AlterSequenceOperation) };
 
-        private static readonly Type[] _renameOperationTypes = { typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenamePrimaryKeyOperation), typeof(RenameSequenceOperation), typeof(RenameUniqueConstraintOperation) };
+        private static readonly Type[] _renameOperationTypes = { typeof(RenameForeignKeyOperation), typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenamePrimaryKeyOperation), typeof(RenameSequenceOperation), typeof(RenameUniqueConstraintOperation) };
 
         private static readonly Type[] _columnOperationTypes = { typeof(AddColumnOperation), typeof(AlterColumnOperation) };
 
@@ -1212,8 +1212,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                 Diff,
                 Add,
                 Remove,
-                (s, t, c) => s.Relational().ConstraintName == t.Relational().ConstraintName
-                             && s.Properties.Select(p => p.Relational().ColumnName).SequenceEqual(
+                (s, t, c) => s.Properties.Select(p => p.Relational().ColumnName).SequenceEqual(
                                  t.Properties.Select(p => c.FindSource(p)?.Relational().ColumnName))
                              && c.FindSourceTable(s.PrincipalEntityType)
                              == c.FindSource(c.FindTargetTable(t.PrincipalEntityType))
@@ -1230,7 +1229,22 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
         /// </summary>
         protected virtual IEnumerable<MigrationOperation> Diff(
             [NotNull] IForeignKey source, [NotNull] IForeignKey target, [NotNull] DiffContext diffContext)
-            => Enumerable.Empty<MigrationOperation>();
+        {
+            var targetEntityTypeAnnotations = target.DeclaringEntityType.RootType().Relational();
+            var sourceName = source.Relational().ConstraintName;
+            var targetName = target.Relational().ConstraintName;
+
+            if (sourceName != targetName)
+            {
+                yield return new RenameForeignKeyOperation
+                {
+                    Schema = targetEntityTypeAnnotations.Schema,
+                    Table = targetEntityTypeAnnotations.TableName,
+                    Name = sourceName,
+                    NewName = targetName
+                };
+            }
+        }
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to

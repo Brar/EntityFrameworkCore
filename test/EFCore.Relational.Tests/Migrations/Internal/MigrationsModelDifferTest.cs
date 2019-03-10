@@ -2889,21 +2889,13 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     }),
                 operations =>
                 {
-                    Assert.Equal(2, operations.Count);
+                    Assert.Equal(1, operations.Count);
 
-                    var dropOperation = Assert.IsType<DropForeignKeyOperation>(operations[0]);
-                    Assert.Equal("dbo", dropOperation.Schema);
-                    Assert.Equal("Nematode", dropOperation.Table);
-                    Assert.Equal("FK_Nematode_Nematode_ParentId", dropOperation.Name);
-
-                    var addOperation = Assert.IsType<AddForeignKeyOperation>(operations[1]);
-                    Assert.Equal("dbo", addOperation.Schema);
-                    Assert.Equal("Nematode", addOperation.Table);
-                    Assert.Equal("FK_Nematode_NematodeParent", addOperation.Name);
-                    Assert.Equal(new[] { "ParentId" }, addOperation.Columns);
-                    Assert.Equal("dbo", addOperation.PrincipalSchema);
-                    Assert.Equal("Nematode", addOperation.PrincipalTable);
-                    Assert.Equal(new[] { "Id" }, addOperation.PrincipalColumns);
+                    var renameOperation = Assert.IsType<RenameForeignKeyOperation>(operations[0]);
+                    Assert.Equal("dbo", renameOperation.Schema);
+                    Assert.Equal("Nematode", renameOperation.Table);
+                    Assert.Equal("FK_Nematode_Nematode_ParentId", renameOperation.Name);
+                    Assert.Equal("FK_Nematode_NematodeParent", renameOperation.NewName);
                 });
         }
 
@@ -4188,12 +4180,11 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     }),
                 operations =>
                 {
-                    Assert.Equal(4, operations.Count);
+                    Assert.Equal(3, operations.Count);
 
-                    Assert.IsType<DropForeignKeyOperation>(operations[0]);
-                    Assert.IsType<RenameColumnOperation>(operations[1]);
-                    Assert.IsType<RenameIndexOperation>(operations[2]);
-                    Assert.IsType<AddForeignKeyOperation>(operations[3]);
+                    Assert.IsType<RenameColumnOperation>(operations[0]);
+                    Assert.IsType<RenameIndexOperation>(operations[1]);
+                    Assert.IsType<RenameForeignKeyOperation>(operations[2]);
                 });
         }
 

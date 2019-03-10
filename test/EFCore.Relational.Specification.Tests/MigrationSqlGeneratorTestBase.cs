@@ -400,6 +400,17 @@ namespace Microsoft.EntityFrameworkCore
                 });
 
         [Fact]
+        public virtual void RenameForeignKeyOperation()
+            => Generate(
+                new RenameForeignKeyOperation
+                {
+                    Table = "People",
+                    Schema = "dbo",
+                    Name = "FK_People_Name_Names_Name",
+                    NewName = "FK_People_FullName_Names_Name"
+                });
+
+        [Fact]
         public virtual void RenamePrimaryKeyOperation()
             => Generate(
                 new RenamePrimaryKeyOperation

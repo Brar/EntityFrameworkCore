@@ -1442,6 +1442,32 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         [Fact]
+        public override void RenameForeignKeyOperation()
+        {
+            base.RenameForeignKeyOperation();
+
+            Assert.Equal(
+                "EXEC sp_rename N'[dbo].[FK_People_Name_Names_Name]', N'FK_People_FullName_Names_Name', N'OBJECT';" + EOL,
+                Sql);
+        }
+
+        [Fact]
+        public virtual void RenameForeignKeyOperation_throws_when_no_schema()
+        {
+            var migrationBuilder = new MigrationBuilder("SqlServer");
+
+            migrationBuilder.RenameForeignKey(
+                name: "FK_People_Name_Names_Name",
+                newName: "FK_People_FullName_Names_Name",
+                table: "People");
+
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => Generate(migrationBuilder.Operations.ToArray()));
+
+            Assert.Equal(SqlServerStrings.ForeignKeySchemaRequired, ex.Message);
+        }
+
+        [Fact]
         public virtual void RenameIndexOperation()
         {
             Generate(

@@ -2065,6 +2065,52 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Design
         }
 
         [Fact]
+        public void RenameForeignKeyOperation_required_args()
+        {
+            Test(
+                new RenameForeignKeyOperation
+                {
+                    Name = "FK_Post_Title_Titles_Name",
+                    NewName = "FK_Post_PostTitle_Titles_Name"
+                },
+                "mb.RenameForeignKey(" + _eol +
+                "    name: \"FK_Post_Title_Titles_Name\"," + _eol +
+                "    newName: \"FK_Post_PostTitle_Titles_Name\");",
+                o =>
+                {
+                    Assert.Equal("FK_Post_Title_Titles_Name", o.Name);
+                    Assert.Equal("FK_Post_PostTitle_Titles_Name", o.NewName);
+                    Assert.Null(o.Table);
+                    Assert.Null(o.Schema);
+                });
+        }
+
+        [Fact]
+        public void RenameForeignKeyOperation_all_args()
+        {
+            Test(
+                new RenameForeignKeyOperation
+                {
+                    Name = "FK_Post_Title_Titles_Name",
+                    Schema = "dbo",
+                    Table = "Post",
+                    NewName = "FK_Post_PostTitle_Titles_Name"
+                },
+                "mb.RenameForeignKey(" + _eol +
+                "    name: \"FK_Post_Title_Titles_Name\"," + _eol +
+                "    schema: \"dbo\"," + _eol +
+                "    table: \"Post\"," + _eol +
+                "    newName: \"FK_Post_PostTitle_Titles_Name\");",
+                o =>
+                {
+                    Assert.Equal("FK_Post_Title_Titles_Name", o.Name);
+                    Assert.Equal("dbo", o.Schema);
+                    Assert.Equal("Post", o.Table);
+                    Assert.Equal("FK_Post_PostTitle_Titles_Name", o.NewName);
+                });
+        }
+
+        [Fact]
         public void RenameIndexOperation_required_args()
         {
             Test(

@@ -371,6 +371,12 @@ namespace Microsoft.EntityFrameworkCore
                 Sql);
         }
 
+        public override void RenameForeignKeyOperation()
+        {
+            var ex = Assert.Throws<NotSupportedException>(() => base.RenameForeignKeyOperation());
+            Assert.Equal(SqliteStrings.InvalidMigrationOperation(nameof(Migrations.Operations.RenameForeignKeyOperation)), ex.Message);
+        }
+
         [Fact]
         public virtual void RenameIndexOperation()
         {
