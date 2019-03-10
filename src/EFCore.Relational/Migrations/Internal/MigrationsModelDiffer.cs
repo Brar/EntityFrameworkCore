@@ -43,7 +43,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
 
         private static readonly Type[] _alterOperationTypes = { typeof(AddPrimaryKeyOperation), typeof(AddUniqueConstraintOperation), typeof(AlterSequenceOperation) };
 
-        private static readonly Type[] _renameOperationTypes = { typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenameSequenceOperation) };
+        private static readonly Type[] _renameOperationTypes = { typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenamePrimaryKeyOperation), typeof(RenameSequenceOperation) };
 
         private static readonly Type[] _columnOperationTypes = { typeof(AddColumnOperation), typeof(AlterColumnOperation) };
 
@@ -1069,8 +1069,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                 Diff,
                 Add,
                 Remove,
-                (s, t, c) => s.Relational().Name == t.Relational().Name
-                             && s.Properties.Select(p => p.Relational().ColumnName).SequenceEqual(
+                (s, t, c) => s.Properties.Select(p => p.Relational().ColumnName).SequenceEqual(
                                  t.Properties.Select(p => c.FindSource(p)?.Relational().ColumnName))
                              && s.IsPrimaryKey() == t.IsPrimaryKey()
                              && !HasDifferences(MigrationsAnnotations.For(s), MigrationsAnnotations.For(t)));
@@ -1085,7 +1084,22 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
             [NotNull] IKey source,
             [NotNull] IKey target,
             [NotNull] DiffContext diffContext)
-            => Enumerable.Empty<MigrationOperation>();
+        {
+            var targetEntityTypeAnnotations = target.DeclaringEntityType.RootType().Relational();
+            var sourceName = source.Relational().Name;
+            var targetName = target.Relational().Name;
+
+            if (sourceName != targetName)
+            {
+                yield return new RenamePrimaryKeyOperation
+                {
+                    Schema = targetEntityTypeAnnotations.Schema,
+                    Table = targetEntityTypeAnnotations.TableName,
+                    Name = sourceName,
+                    NewName = targetName
+                };
+            }
+        }
 
         /// <summary>
         ///     This is an internal API that supports the Entity Framework Core infrastructure and not subject to

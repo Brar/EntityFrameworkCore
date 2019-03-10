@@ -244,4 +244,7 @@
   <data name="DuplicateKeyMismatchedClustering" xml:space="preserve">
     <value>The keys {key1} on '{entityType1}' and {key2} on '{entityType2}' are both mapped to '{table}.{keyName}' but with different clustering.</value>
   </data>
+  <data name="PrimaryKeySchemaRequired" xml:space="preserve">
+    <value>SQL Server requires the schema name to be specified for rename primary key operations. Specify schema name in the call to MigrationBuilder.RenamePrimaryKey.</value>
+  </data>
 </root>

@@ -1474,6 +1474,32 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         [Fact]
+        public override void RenamePrimaryKeyOperation()
+        {
+            base.RenamePrimaryKeyOperation();
+
+            Assert.Equal(
+                "EXEC sp_rename N'[dbo].[PK_People_Name]', N'PK_People_FullName', N'OBJECT';" + EOL,
+                Sql);
+        }
+
+        [Fact]
+        public virtual void RenamePrimaryKeyOperation_throws_when_no_schema()
+        {
+            var migrationBuilder = new MigrationBuilder("SqlServer");
+
+            migrationBuilder.RenamePrimaryKey(
+                name: "PK_People_Name",
+                newName: "PK_People_FullName",
+                table: "People");
+
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => Generate(migrationBuilder.Operations.ToArray()));
+
+            Assert.Equal(SqlServerStrings.PrimaryKeySchemaRequired, ex.Message);
+        }
+
+        [Fact]
         public virtual void RenameSequenceOperation_legacy()
         {
             Generate(

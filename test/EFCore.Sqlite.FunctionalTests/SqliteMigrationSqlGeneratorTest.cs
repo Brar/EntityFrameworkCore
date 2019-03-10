@@ -412,6 +412,12 @@ namespace Microsoft.EntityFrameworkCore
             Assert.Equal(SqliteStrings.InvalidMigrationOperation("RenameIndexOperation"), ex.Message);
         }
 
+        public override void RenamePrimaryKeyOperation()
+        {
+            var ex = Assert.Throws<NotSupportedException>(() => base.RenamePrimaryKeyOperation());
+            Assert.Equal(SqliteStrings.InvalidMigrationOperation(nameof(Migrations.Operations.RenamePrimaryKeyOperation)), ex.Message);
+        }
+
         public override void RenameTableOperation_legacy()
         {
             base.RenameTableOperation_legacy();

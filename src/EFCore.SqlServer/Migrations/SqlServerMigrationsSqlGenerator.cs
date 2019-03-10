@@ -376,6 +376,34 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         }
 
         /// <summary>
+        ///     Builds commands for the given <see cref="RenamePrimaryKeyOperation" />
+        ///     by making calls on the given <see cref="MigrationCommandListBuilder" />.
+        /// </summary>
+        /// <param name="operation"> The operation. </param>
+        /// <param name="model"> The target model which may be <c>null</c> if the operations exist without a model. </param>
+        /// <param name="builder"> The command builder to use to build the commands. </param>
+        protected override void Generate(
+            RenamePrimaryKeyOperation operation,
+            IModel model,
+            MigrationCommandListBuilder builder)
+        {
+            Check.NotNull(operation, nameof(operation));
+            Check.NotNull(builder, nameof(builder));
+
+            if (string.IsNullOrEmpty(operation.Schema))
+            {
+                throw new InvalidOperationException(SqlServerStrings.PrimaryKeySchemaRequired);
+            }
+
+            Rename(
+                Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.Name, operation.Schema),
+                operation.NewName,
+                "OBJECT",
+                builder);
+            builder.EndCommand(suppressTransaction: IsMemoryOptimized(operation, model, operation.Schema, operation.Table));
+        }
+
+        /// <summary>
         ///     Builds commands for the given <see cref="RenameSequenceOperation" />
         ///     by making calls on the given <see cref="MigrationCommandListBuilder" />.
         /// </summary>

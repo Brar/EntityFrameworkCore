@@ -173,6 +173,12 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Internal
                 GetString("DuplicateKeyMismatchedClustering", nameof(key1), nameof(entityType1), nameof(key2), nameof(entityType2), nameof(table), nameof(keyName)),
                 key1, entityType1, key2, entityType2, table, keyName);
 
+        /// <summary>
+        ///     SQL Server requires the schema name to be specified for rename primary key operations. Specify schema name in the call to MigrationBuilder.RenamePrimaryKey.
+        /// </summary>
+        public static string PrimaryKeySchemaRequired
+            => GetString("PrimaryKeySchemaRequired");
+
         private static string GetString(string name, params string[] formatterNames)
         {
             var value = _resourceManager.GetString(name);

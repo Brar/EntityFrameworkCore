@@ -400,6 +400,17 @@ namespace Microsoft.EntityFrameworkCore
                 });
 
         [Fact]
+        public virtual void RenamePrimaryKeyOperation()
+            => Generate(
+                new RenamePrimaryKeyOperation
+                {
+                    Table = "People",
+                    Schema = "dbo",
+                    Name = "PK_People_Name",
+                    NewName = "PK_People_FullName"
+                });
+
+        [Fact]
         public virtual void CreateIndexOperation_unique()
             => Generate(
                 new CreateIndexOperation

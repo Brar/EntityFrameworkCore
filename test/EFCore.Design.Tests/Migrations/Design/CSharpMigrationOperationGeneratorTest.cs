@@ -2112,6 +2112,52 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Design
         }
 
         [Fact]
+        public void RenamePrimaryKeyOperation_required_args()
+        {
+            Test(
+                new RenamePrimaryKeyOperation
+                {
+                    Name = "PK_Post_Title",
+                    NewName = "PK_Post_PostTitle"
+                },
+                "mb.RenamePrimaryKey(" + _eol +
+                "    name: \"PK_Post_Title\"," + _eol +
+                "    newName: \"PK_Post_PostTitle\");",
+                o =>
+                {
+                    Assert.Equal("PK_Post_Title", o.Name);
+                    Assert.Equal("PK_Post_PostTitle", o.NewName);
+                    Assert.Null(o.Table);
+                    Assert.Null(o.Schema);
+                });
+        }
+
+        [Fact]
+        public void RenamePrimaryKeyOperation_all_args()
+        {
+            Test(
+                new RenamePrimaryKeyOperation
+                {
+                    Name = "PK_dbo.Post_Title",
+                    Schema = "dbo",
+                    Table = "Post",
+                    NewName = "PK_dbo.Post_PostTitle"
+                },
+                "mb.RenamePrimaryKey(" + _eol +
+                "    name: \"PK_dbo.Post_Title\"," + _eol +
+                "    schema: \"dbo\"," + _eol +
+                "    table: \"Post\"," + _eol +
+                "    newName: \"PK_dbo.Post_PostTitle\");",
+                o =>
+                {
+                    Assert.Equal("PK_dbo.Post_Title", o.Name);
+                    Assert.Equal("dbo", o.Schema);
+                    Assert.Equal("Post", o.Table);
+                    Assert.Equal("PK_dbo.Post_PostTitle", o.NewName);
+                });
+        }
+
+        [Fact]
         public void RenameSequenceOperation_required_args()
         {
             Test(

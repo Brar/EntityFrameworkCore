@@ -63,6 +63,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations
                 { typeof(EnsureSchemaOperation), (g, o, m, b) => g.Generate((EnsureSchemaOperation)o, m, b) },
                 { typeof(RenameColumnOperation), (g, o, m, b) => g.Generate((RenameColumnOperation)o, m, b) },
                 { typeof(RenameIndexOperation), (g, o, m, b) => g.Generate((RenameIndexOperation)o, m, b) },
+                { typeof(RenamePrimaryKeyOperation), (g, o, m, b) => g.Generate((RenamePrimaryKeyOperation)o, m, b) },
                 { typeof(RenameSequenceOperation), (g, o, m, b) => g.Generate((RenameSequenceOperation)o, m, b) },
                 { typeof(RenameTableOperation), (g, o, m, b) => g.Generate((RenameTableOperation)o, m, b) },
                 { typeof(RestartSequenceOperation), (g, o, m, b) => g.Generate((RestartSequenceOperation)o, m, b) },
@@ -387,6 +388,27 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         /// <param name="builder"> The command builder to use to build the commands. </param>
         protected virtual void Generate(
             [NotNull] RenameIndexOperation operation,
+            [CanBeNull] IModel model,
+            [NotNull] MigrationCommandListBuilder builder)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///     <para>
+        ///         Can be overridden by database providers to build commands for the given <see cref="RenamePrimaryKeyOperation" />
+        ///         by making calls on the given <see cref="MigrationCommandListBuilder" />.
+        ///     </para>
+        ///     <para>
+        ///         Note that the default implementation of this method throws <see cref="NotImplementedException" />. Providers
+        ///         must override if they are to support this kind of operation.
+        ///     </para>
+        /// </summary>
+        /// <param name="operation"> The operation. </param>
+        /// <param name="model"> The target model which may be <c>null</c> if the operations exist without a model. </param>
+        /// <param name="builder"> The command builder to use to build the commands. </param>
+        protected virtual void Generate(
+            [NotNull] RenamePrimaryKeyOperation operation,
             [CanBeNull] IModel model,
             [NotNull] MigrationCommandListBuilder builder)
         {
