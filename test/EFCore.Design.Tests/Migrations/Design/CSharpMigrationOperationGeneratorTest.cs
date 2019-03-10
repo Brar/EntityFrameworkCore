@@ -2234,6 +2234,52 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Design
         }
 
         [Fact]
+        public void RenameUniqueConstraintOperation_required_args()
+        {
+            Test(
+                new RenameUniqueConstraintOperation
+                {
+                    Name = "UN_Post_Title",
+                    NewName = "UN_Post_PostTitle"
+                },
+                "mb.RenameUniqueConstraint(" + _eol +
+                "    name: \"UN_Post_Title\"," + _eol +
+                "    newName: \"UN_Post_PostTitle\");",
+                o =>
+                {
+                    Assert.Equal("UN_Post_Title", o.Name);
+                    Assert.Equal("UN_Post_PostTitle", o.NewName);
+                    Assert.Null(o.Table);
+                    Assert.Null(o.Schema);
+                });
+        }
+
+        [Fact]
+        public void RenameUniqueConstraintOperation_all_args()
+        {
+            Test(
+                new RenameUniqueConstraintOperation
+                {
+                    Name = "UN_dbo.Post_Title",
+                    Schema = "dbo",
+                    Table = "Post",
+                    NewName = "UN_dbo.Post_PostTitle"
+                },
+                "mb.RenameUniqueConstraint(" + _eol +
+                "    name: \"UN_dbo.Post_Title\"," + _eol +
+                "    schema: \"dbo\"," + _eol +
+                "    table: \"Post\"," + _eol +
+                "    newName: \"UN_dbo.Post_PostTitle\");",
+                o =>
+                {
+                    Assert.Equal("UN_dbo.Post_Title", o.Name);
+                    Assert.Equal("dbo", o.Schema);
+                    Assert.Equal("Post", o.Table);
+                    Assert.Equal("UN_dbo.Post_PostTitle", o.NewName);
+                });
+        }
+
+        [Fact]
         public void RestartSequenceOperation_required_args()
         {
             Test(

@@ -436,6 +436,12 @@ namespace Microsoft.EntityFrameworkCore
                 Sql);
         }
 
+        public override void RenameUniqueConstraintOperation()
+        {
+            var ex = Assert.Throws<NotSupportedException>(() => base.RenameUniqueConstraintOperation());
+            Assert.Equal(SqliteStrings.InvalidMigrationOperation(nameof(Migrations.Operations.RenameUniqueConstraintOperation)), ex.Message);
+        }
+
         public override void CreateSequenceOperation_with_minValue_and_maxValue()
         {
             var ex = Assert.Throws<NotSupportedException>(() => base.CreateSequenceOperation_with_minValue_and_maxValue());

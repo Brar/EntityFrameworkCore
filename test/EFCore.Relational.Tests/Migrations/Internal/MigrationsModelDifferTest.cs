@@ -2225,18 +2225,13 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     }),
                 operations =>
                 {
-                    Assert.Equal(2, operations.Count);
+                    Assert.Equal(1, operations.Count);
 
-                    var dropOperation = Assert.IsType<DropUniqueConstraintOperation>(operations[0]);
-                    Assert.Equal("dbo", dropOperation.Schema);
-                    Assert.Equal("Pelican", dropOperation.Table);
-                    Assert.Equal("AK_Pelican_AlternateId", dropOperation.Name);
-
-                    var addOperation = Assert.IsType<AddUniqueConstraintOperation>(operations[1]);
-                    Assert.Equal("dbo", addOperation.Schema);
-                    Assert.Equal("Pelican", addOperation.Table);
-                    Assert.Equal("AK_dbo.Pelican_AlternateId", addOperation.Name);
-                    Assert.Equal(new[] { "AlternateId" }, addOperation.Columns);
+                    var renameOperation = Assert.IsType<RenameUniqueConstraintOperation>(operations[0]);
+                    Assert.Equal("dbo", renameOperation.Schema);
+                    Assert.Equal("Pelican", renameOperation.Table);
+                    Assert.Equal("AK_Pelican_AlternateId", renameOperation.Name);
+                    Assert.Equal("AK_dbo.Pelican_AlternateId", renameOperation.NewName);
                 });
         }
 
@@ -4017,11 +4012,10 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
                     }),
                 operations =>
                 {
-                    Assert.Equal(3, operations.Count);
+                    Assert.Equal(2, operations.Count);
 
-                    Assert.IsType<DropUniqueConstraintOperation>(operations[0]);
-                    Assert.IsType<RenameColumnOperation>(operations[1]);
-                    Assert.IsType<AddUniqueConstraintOperation>(operations[2]);
+                    Assert.IsType<RenameColumnOperation>(operations[0]);
+                    Assert.IsType<RenameUniqueConstraintOperation>(operations[1]);
                 });
         }
 

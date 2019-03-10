@@ -438,6 +438,34 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         }
 
         /// <summary>
+        ///     Builds commands for the given <see cref="RenameUniqueConstraintOperation" />
+        ///     by making calls on the given <see cref="MigrationCommandListBuilder" />.
+        /// </summary>
+        /// <param name="operation"> The operation. </param>
+        /// <param name="model"> The target model which may be <c>null</c> if the operations exist without a model. </param>
+        /// <param name="builder"> The command builder to use to build the commands. </param>
+        protected override void Generate(
+            RenameUniqueConstraintOperation operation,
+            IModel model,
+            MigrationCommandListBuilder builder)
+        {
+            Check.NotNull(operation, nameof(operation));
+            Check.NotNull(builder, nameof(builder));
+
+            if (string.IsNullOrEmpty(operation.Schema))
+            {
+                throw new InvalidOperationException(SqlServerStrings.UniqueConstraintSchemaRequired);
+            }
+
+            Rename(
+                Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.Name, operation.Schema),
+                operation.NewName,
+                "OBJECT",
+                builder);
+            builder.EndCommand(suppressTransaction: IsMemoryOptimized(operation, model, operation.Schema, operation.Table));
+        }
+
+        /// <summary>
         ///     Builds commands for the given <see cref="RestartSequenceOperation" /> by making calls on the given
         ///     <see cref="MigrationCommandListBuilder" />, and then terminates the final command.
         /// </summary>

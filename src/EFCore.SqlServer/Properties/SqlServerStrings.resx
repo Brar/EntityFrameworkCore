@@ -247,4 +247,7 @@
   <data name="PrimaryKeySchemaRequired" xml:space="preserve">
     <value>SQL Server requires the schema name to be specified for rename primary key operations. Specify schema name in the call to MigrationBuilder.RenamePrimaryKey.</value>
   </data>
+  <data name="UniqueConstraintSchemaRequired" xml:space="preserve">
+    <value>SQL Server requires the schema name to be specified for rename unique constraint operations. Specify schema name in the call to MigrationBuilder.RenameUniqueConstraint.</value>
+  </data>
 </root>

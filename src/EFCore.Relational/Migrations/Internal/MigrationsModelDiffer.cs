@@ -43,7 +43,7 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
 
         private static readonly Type[] _alterOperationTypes = { typeof(AddPrimaryKeyOperation), typeof(AddUniqueConstraintOperation), typeof(AlterSequenceOperation) };
 
-        private static readonly Type[] _renameOperationTypes = { typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenamePrimaryKeyOperation), typeof(RenameSequenceOperation) };
+        private static readonly Type[] _renameOperationTypes = { typeof(RenameColumnOperation), typeof(RenameIndexOperation), typeof(RenamePrimaryKeyOperation), typeof(RenameSequenceOperation), typeof(RenameUniqueConstraintOperation) };
 
         private static readonly Type[] _columnOperationTypes = { typeof(AddColumnOperation), typeof(AlterColumnOperation) };
 
@@ -1091,13 +1091,26 @@ namespace Microsoft.EntityFrameworkCore.Migrations.Internal
 
             if (sourceName != targetName)
             {
-                yield return new RenamePrimaryKeyOperation
+                if (target.IsPrimaryKey())
                 {
-                    Schema = targetEntityTypeAnnotations.Schema,
-                    Table = targetEntityTypeAnnotations.TableName,
-                    Name = sourceName,
-                    NewName = targetName
-                };
+                    yield return new RenamePrimaryKeyOperation
+                    {
+                        Schema = targetEntityTypeAnnotations.Schema,
+                        Table = targetEntityTypeAnnotations.TableName,
+                        Name = sourceName,
+                        NewName = targetName
+                    };
+                }
+                else
+                {
+                    yield return new RenameUniqueConstraintOperation
+                    {
+                        Schema = targetEntityTypeAnnotations.Schema,
+                        Table = targetEntityTypeAnnotations.TableName,
+                        Name = sourceName,
+                        NewName = targetName
+                    };
+                }
             }
         }
 

@@ -42,6 +42,10 @@ namespace Microsoft.EntityFrameworkCore.TestUtilities
         {
         }
 
+        protected override void Generate(RenameUniqueConstraintOperation operation, IModel model, MigrationCommandListBuilder builder)
+        {
+        }
+
         protected override void Generate(AlterColumnOperation operation, IModel model, MigrationCommandListBuilder builder)
         {
         }

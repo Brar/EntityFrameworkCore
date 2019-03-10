@@ -1554,6 +1554,32 @@ namespace Microsoft.EntityFrameworkCore
         }
 
         [Fact]
+        public override void RenameUniqueConstraintOperation()
+        {
+            base.RenameUniqueConstraintOperation();
+
+            Assert.Equal(
+                "EXEC sp_rename N'[dbo].[UN_People_Name]', N'UN_People_FullName', N'OBJECT';" + EOL,
+                Sql);
+        }
+
+        [Fact]
+        public virtual void RenameUniqueConstraintOperation_throws_when_no_schema()
+        {
+            var migrationBuilder = new MigrationBuilder("SqlServer");
+
+            migrationBuilder.RenameUniqueConstraint(
+                name: "UN_People_Name",
+                newName: "UN_People_FullName",
+                table: "People");
+
+            var ex = Assert.Throws<InvalidOperationException>(
+                () => Generate(migrationBuilder.Operations.ToArray()));
+
+            Assert.Equal(SqlServerStrings.UniqueConstraintSchemaRequired, ex.Message);
+        }
+
+        [Fact]
         public virtual void SqlOperation_handles_backslash()
         {
             Generate(

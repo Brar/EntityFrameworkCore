@@ -1067,6 +1067,35 @@ namespace Microsoft.EntityFrameworkCore.Migrations
         }
 
         /// <summary>
+        ///     Builds an <see cref="RenameUniqueConstraintOperation" /> to rename an existing unique constraint.
+        /// </summary>
+        /// <param name="name"> The name of the unique constraint to be renamed.</param>
+        /// <param name="newName"> The new name for the unique constraint. </param>
+        /// <param name="table"> The table that the unique constraint belongs to. </param>
+        /// <param name="schema"> The schema that contains the table, or <c>null</c> to use the default schema. </param>
+        /// <returns> A builder to allow annotations to be added to the operation. </returns>
+        public virtual OperationBuilder<RenameUniqueConstraintOperation> RenameUniqueConstraint(
+            [NotNull] string name,
+            [NotNull] string newName,
+            [CanBeNull] string table = null,
+            [CanBeNull] string schema = null)
+        {
+            Check.NotEmpty(name, nameof(name));
+            Check.NotEmpty(newName, nameof(newName));
+
+            var operation = new RenameUniqueConstraintOperation
+            {
+                Schema = schema,
+                Table = table,
+                Name = name,
+                NewName = newName
+            };
+            Operations.Add(operation);
+
+            return new OperationBuilder<RenameUniqueConstraintOperation>(operation);
+        }
+
+        /// <summary>
         ///     Builds an <see cref="RestartSequenceOperation" /> to re-start an existing sequence.
         /// </summary>
         /// <param name="name"> The name of the sequence.</param>

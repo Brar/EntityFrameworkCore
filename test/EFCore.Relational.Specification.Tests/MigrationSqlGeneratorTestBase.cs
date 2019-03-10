@@ -411,6 +411,17 @@ namespace Microsoft.EntityFrameworkCore
                 });
 
         [Fact]
+        public virtual void RenameUniqueConstraintOperation()
+            => Generate(
+                new RenameUniqueConstraintOperation
+                {
+                    Table = "People",
+                    Schema = "dbo",
+                    Name = "UN_People_Name",
+                    NewName = "UN_People_FullName"
+                });
+
+        [Fact]
         public virtual void CreateIndexOperation_unique()
             => Generate(
                 new CreateIndexOperation
